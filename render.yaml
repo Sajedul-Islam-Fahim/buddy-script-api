@@ -1,0 +1,55 @@
+databases:
+  - name: buddy-script-db
+    plan: free
+    databaseName: buddy_script
+    user: buddy_script
+
+services:
+  - type: web
+    name: buddy-script-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: BuddyScript
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        sync: false # paste the base64:... key Claude generated for you
+      - key: APP_URL
+        sync: false # set to this service's onrender.com URL after first deploy
+      - key: FRONTEND_URL
+        sync: false # set to your Netlify site URL, for CORS
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: buddy-script-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: buddy-script-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: buddy-script-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: buddy-script-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: buddy-script-db
+          property: password
